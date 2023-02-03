@@ -104,5 +104,5 @@ test_data[['log_returns', 'log_returns_strategised']
           ].cumsum().apply(np.exp).plot(figsize=(12, 7))
 
 print("4 ... MODEL TESTED")
-'''
+
 xlwriter.save()
