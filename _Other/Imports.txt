@@ -1,0 +1,2 @@
+pip install yfinance
+python -m pip install "tensorflow<2.11"
