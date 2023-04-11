@@ -3,15 +3,17 @@ from keras.layers import Bidirectional, Dropout, Activation, Dense
 from keras.layers import LSTM
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 import seaborn as sns
 from pylab import rcParams
 
-from env import SEQ_LEN, PREDICTION_TIMES, REAL, PREDICTED
+from env import PREDICTION_TIMES, REAL, PREDICTED, SEQ_LEN
 from afterProcessData import getRealandPred, calculateDifferencePercentage, calculatePercentageofCorrectDirection
 
 sns.set(style='whitegrid', palette='muted', font_scale=1.5)
 rcParams['figure.figsize'] = 14, 8
+
 
 def createFinalGraf(df):
     plt.plot(df[REAL], label="Actual Price", color='green')
@@ -25,7 +27,7 @@ def createFinalGraf(df):
     return plt
 
 
-def createModel(SEQ_LEN, X_train, DROPOUT=0.2):
+def createModel(X_train, DROPOUT=0.2):
     WINDOW_SIZE = SEQ_LEN
 
     model = keras.Sequential()
@@ -64,12 +66,12 @@ def trainModel(model, X_train, Y_train):
     return model
 
 
-def prepareModel(key, SEQ_LEN, X_train, Y_train, X_test, Y_test):
+def prepareModel(key, X_train, Y_train, X_test, Y_test):
     if(key == "LOAD"):
         model = keras.models.load_model("Core")
         print("------Model Loaded-----")
     else:
-        model = createModel(SEQ_LEN, X_train)
+        model = createModel(X_train)
         print("------Model Created-----")
 
         model = trainModel(model, X_train, Y_train)
@@ -82,14 +84,15 @@ def prepareModel(key, SEQ_LEN, X_train, Y_train, X_test, Y_test):
     return model
 
 
-def predict(model, SEQ_LEN, X_test, file_pred, file_real_pred, test_data, scaler):
+def predict(model, X_test, file_pred, file_real_pred, test_data, scaler):
     predicted = model.predict(X_test)
+
     print("------Model Predicted-----")
 
     file_pred.write(str(predicted))
 
     realPredPrice = getRealandPred(
-        test_data, scaler, predicted, SEQ_LEN)
+        test_data, scaler, predicted)
 
     file_real_pred.write(str(realPredPrice))
 
@@ -105,12 +108,9 @@ def predictModel(key, X_train, Y_train, X_test, Y_test, file_pred, file_real_pre
 
     df = pd.DataFrame([], columns=['diference', 'min', 'max', 'percents'])
     for i in range(1, PREDICTION_TIMES + 1):
-
-        model = prepareModel(key, SEQ_LEN, X_train, Y_train, X_test, Y_test)
-
+        model = prepareModel(key, X_train, Y_train, X_test, Y_test)
         plt, dif, min, max, percents = predict(
-            model, SEQ_LEN, X_test, file_pred, file_real_pred, test_data, scaler)
+            model, X_test, file_pred, file_real_pred, test_data, scaler)
 
         df.loc[len(df.index)] = [dif, min, max, percents]
-
     return plt, df
