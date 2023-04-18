@@ -31,12 +31,16 @@ def getRealandPred(test_data, scaler, predicted):
 
 def afterProcess(test_data, scaler, predicted):
     realPredPrice = pd.DataFrame()
+    print("AFTER------------")
     if PREDICT_PARAM in NOT_NORMILIZE_PARAMS:
+        print("IN________________")
         temp = getTemp(test_data, False)
         realPredPrice[REAL] = temp[PREDICT_PARAM].append(
             to_append=pd.Series([None]), ignore_index=True)
+        """
         realPredPrice[PREDICTED] = pd.Series([None]).append(
             to_append=pd.Series(predicted.flatten()), ignore_index=True)
+            """
     else:
         realPredPrice = denormilizeData(test_data, scaler, predicted)
     return realPredPrice
@@ -52,10 +56,18 @@ def denormilizeData(test_data, scaler, predicted):
 
     temp = getTemp(test_data)
     predicted = predicted.flatten()
-    temp[PREDICT_PARAM] = predicted
+    temp[PREDICT_PARAM] = predicted[1:]
     temp = inverse(scaler, temp)
     realPredPrice[PREDICTED] = pd.Series([None]).append(
         to_append=temp[PREDICT_PARAM], ignore_index=True)
+
+    diference = realPredPrice[PREDICTED][1] - realPredPrice[REAL][1]
+
+    counter = 0
+    for i in realPredPrice[PREDICTED]:
+        if i is not None:
+            realPredPrice[PREDICTED][counter] -= diference
+        counter += 1
 
     return realPredPrice
 

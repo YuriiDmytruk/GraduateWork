@@ -28,9 +28,11 @@ file_norm = open("./Data/Data_Normilized.txt", "w")
 data = getData(file_data, interval=INTERVAL)
 print("-----Data Received-----")
 
+
 data, scaler, train_data, test_data, X_train, Y_train, X_test, Y_test = prepareData(
     data, file_data_train, file_data_test, file_X_train, file_Y_train, file_X_test, file_Y_test, file_norm)
 print('-----Data Prepared-----')
+
 
 plt, outData = predictModel("CREATE", X_train, Y_train, X_test,
                             Y_test, file_pred, file_real_pred, test_data, scaler)

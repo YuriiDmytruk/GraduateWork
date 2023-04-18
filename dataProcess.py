@@ -17,7 +17,7 @@ def normalization(data):
     return data, scaler
 
 
-def processData(X_data, Y_data, SEQ_LEN, OFFSET, OUT_PARAMS):
+def processData(X_data, Y_data, SEQ_LEN, OFFSET, OUT_PARAMS, KEY):
 
     np_in_data = np.array(X_data)
     np_out_data = np.array(Y_data).reshape(-1, 1)
@@ -25,7 +25,11 @@ def processData(X_data, Y_data, SEQ_LEN, OFFSET, OUT_PARAMS):
     N = np_in_data.shape[0]
     k = N - (SEQ_LEN + OFFSET + OUT_PARAMS) + 1
     # Create Input and output Slice
-    in_slice = np.array([range(i, i + SEQ_LEN) for i in range(k)])
+    if KEY == 1:
+        in_slice = np.array([range(i, i + SEQ_LEN) for i in range(k + 1)])
+    else:
+        in_slice = np.array([range(i, i + SEQ_LEN) for i in range(k)])
+
     out_slice = np.array(
         [range(i + SEQ_LEN + OFFSET, i + SEQ_LEN + OFFSET + OUT_PARAMS) for i in range(k)])
 
@@ -54,9 +58,9 @@ def prepareData(data, file_data_train, file_data_test, file_X_train, file_Y_trai
     print("-----Created test and training data-----")
 
     X_train, Y_train = processData(
-        train_data, train_data[PREDICT_PARAM], SEQ_LEN, OFFSET, OUT_PARAMS)
+        train_data, train_data[PREDICT_PARAM], SEQ_LEN, OFFSET, OUT_PARAMS, 0)
     X_test, Y_test = processData(
-        test_data, test_data[PREDICT_PARAM], SEQ_LEN, OFFSET, OUT_PARAMS)
+        test_data, test_data[PREDICT_PARAM], SEQ_LEN, OFFSET, OUT_PARAMS, 1)
 
     print(X_train.shape)
     print(Y_train.shape)

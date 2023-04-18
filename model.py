@@ -57,7 +57,7 @@ def trainModel(model, X_train, Y_train):
     history = model.fit(
         X_train,
         Y_train,
-        epochs=50,
+        epochs=30,
         batch_size=BATCH_SIZE,
         shuffle=False,
         validation_split=0.1
@@ -78,9 +78,6 @@ def prepareModel(key, X_train, Y_train, X_test, Y_test):
         print("------Model Trained-----")
 
         # model.save("Core")
-
-    model.evaluate(X_test, Y_test)
-    print("------Model Evaluated-----")
     return model
 
 
@@ -96,7 +93,10 @@ def predict(model, X_test, file_pred, file_real_pred, test_data, scaler):
 
     file_real_pred.write(str(realPredPrice))
 
-    dif, min, max = calculateDifferencePercentage(realPredPrice)
+    #dif, min, max = calculateDifferencePercentage(realPredPrice)
+    dif = 0
+    min = 0
+    max = 0
     percents = calculatePercentageofCorrectDirection(realPredPrice)
 
     plt = createFinalGraf(realPredPrice)
