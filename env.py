@@ -18,11 +18,19 @@ TRAIN_PARAMS = [
     'Close',
     'Volume',
     'Price',
+
+    "BBL", "BBM", "BBU", "BBB", "BBP",
+
+    'RSI_' + str(IND_HISTORY),
+    'RSI_' + str(IND_HISTORY) + '_A_' + str(RSI_MAX),
+    'RSI_' + str(IND_HISTORY) + '_B_' + str(RSI_MIN),
 ]
 
 PREDICT_PARAM = 'Close'
 
 NOT_NORMILIZE_PARAMS = [
+    'RSI_' + str(IND_HISTORY) + '_A_' + str(RSI_MAX),
+    'RSI_' + str(IND_HISTORY) + '_B_' + str(RSI_MIN),
 ]
 
 PREDICTION_TIMES = 1
